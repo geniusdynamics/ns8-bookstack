@@ -25,17 +25,14 @@ EOS
 trap 'rm -rfv initdb.d/' EXIT
 
 # we start a container to initiate a database and load the dump
-# at the end of bookstack_restore.sh the dump is loaded and 
+# at the end of bookstack_restore.sh the dump is loaded and
 # we exit the container
 podman run \
-  --rm \
-  --interactive \
-  --network=none \
-  --volume=./initdb.d:/docker-entrypoint-initdb.d:z \
-  --volume mysql-data:/var/lib/mysql/:Z \
-  --env MARIADB_ROOT_PASSWORD=Nethesis,1234 \
-  --env MARIADB_DATABASE=bookstack \
-  --env MARIADB_USER=bookstack \
-  --env MARIADB_PASSWORD=bookstack \
-  --replace --name=restore_db \
-  ${MARIADB_IMAGE}
+	--rm \
+	--interactive \
+	--network=none \
+	--volume=./initdb.d:/docker-entrypoint-initdb.d:z \
+	--volume mysql-data:/var/lib/mysql/:Z \
+	--env-file database.env \
+	--replace --name=restore_db \
+	${MARIADB_IMAGE}
