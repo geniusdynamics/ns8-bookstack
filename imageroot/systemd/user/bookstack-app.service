@@ -12,6 +12,8 @@ After=bookstack.service mariadb-app.service
 Environment=PODMAN_SYSTEMD_UNIT=%n
 EnvironmentFile=%S/state/environment
 EnvironmentFile=-%S/state/smarthost.env
+EnvironmentFile=-%S/state/database.env
+EnvironmentFile=-%S/state/app.env
 WorkingDirectory=%S/state
 Restart=always
 TimeoutStopSec=70
@@ -22,13 +24,8 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/bookstack-app.pid \
     --cidfile %t/bookstack-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/bookstack.pod-id --replace -d --name  bookstack-app \
     --volume bookstack-app:/config:Z \
-    --env=BOOKSTACK_* \
-    --env APP_URL=${APP_URL} \
-    --env DB_HOST=127.0.0.1 \
-    --env DB_PORT=3306 \
-    --env DB_USER=bookstack \
-    --env DB_PASS=bookstack \
-    --env DB_DATABASE=bookstack \
+    --env-file=app.env \
+    --env-file=app-db.env \ 
     ${BOOKSTACK_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bookstack-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bookstack-app
