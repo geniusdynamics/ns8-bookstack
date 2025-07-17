@@ -25,7 +25,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/bookstack-app.pid \
     --pod-id-file %t/bookstack.pod-id --replace -d --name  bookstack-app \
     --volume bookstack-app:/config:Z \
     --env-file=app.env \
-    --env-file=app-db.env \ 
+    --env-file=app-db.env \
     ${BOOKSTACK_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bookstack-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bookstack-app
