@@ -1,20 +1,22 @@
 # ns8-bookstack
 
-This is a NS8 App for  [Bookstack](https://www.bookstackapp.com/).
-
+This is a NS8 App for [Bookstack](https://www.bookstackapp.com/).
 
 ## Install
 
 Instantiate the module with:
 
-    add-module ghcr.io/compgeniuses/bookstack:latest 1
+    add-module ghcr.io/geniusdynamics/bookstack:latest 1
 
 The output of the command will return the instance name.
 Output example:
 
-    {"module_id": "bookstack1", "image_name": "bookstack", "image_url": "ghcr.io/compgeniuses/bookstack:latest"}
+    {"module_id": "bookstack1", "image_name": "bookstack", "image_url": "ghcr.io/geniusdynamics/bookstack:latest"}
+
 ## Default Credentials
+
 Initial Login Credetials for boockstack
+
 - `USername`: admin@admin.com
 - `Password`: password
 
@@ -23,10 +25,10 @@ Initial Login Credetials for boockstack
 Let's assume that the mattermost instance is named `bookstack1`.
 
 Launch `configure-module`, by setting the following parameters:
+
 - `host`: a fully qualified domain name for the application
 - `http2https`: enable or disable HTTP to HTTPS redirection (true/false)
 - `lets_encrypt`: enable or disable Let's Encrypt certificate (true/false)
-
 
 Example:
 
@@ -41,10 +43,12 @@ EOF
 ```
 
 The above command will:
+
 - start and configure the bookstack instance
 - configure a virtual host for trafik to access the instance
 
 ## Get the configuration
+
 You can retrieve the configuration with
 
 ```
@@ -61,7 +65,7 @@ To uninstall the instance:
 
 Some configuration settings, like the smarthost setup, are not part of the
 `configure-module` action input: they are discovered by looking at some
-Redis keys.  To ensure the module is always up-to-date with the
+Redis keys. To ensure the module is always up-to-date with the
 centralized [smarthost
 setup](https://nethserver.github.io/ns8-core/core/smarthost/) every time
 bookstack starts, the command `bin/discover-smarthost` runs and refreshes
@@ -81,23 +85,25 @@ expected to work: it can be rewritten or discarded completely.
 some CLI are needed to debug
 
 - The module runs under an agent that initiate a lot of environment variables (in /home/bookstack1/.config/state), it could be nice to verify them
-on the root terminal
+  on the root terminal
 
-    `runagent -m bookstack1 env`
+      `runagent -m bookstack1 env`
 
 - you can become runagent for testing scripts and initiate all environment variables
-  
-    `runagent -m bookstack1`
 
- the path become : 
+  `runagent -m bookstack1`
+
+the path become :
+
 ```
     echo $PATH
     /home/bookstack1/.config/bin:/usr/local/agent/pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/usr/
 ```
 
 - if you want to debug a container or see environment inside
- `runagent -m bookstack1`
- ```
+  `runagent -m bookstack1`
+
+```
 podman ps
 CONTAINER ID  IMAGE                                      COMMAND               CREATED        STATUS        PORTS                    NAMES
 d292c6ff28e9  localhost/podman-pause:4.6.1-1702418000                          9 minutes ago  Up 9 minutes  127.0.0.1:20015->80/tcp  80b8de25945f-infra
@@ -106,6 +112,7 @@ d8df02bf6f4a  docker.io/library/mariadb:10.11.5          --character-set-s...  9
 ```
 
 you can see what environment variable is inside the container
+
 ```
 podman exec  bookstack-app env
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -128,14 +135,14 @@ you can run a shell inside the container
 
 ```
 podman exec -ti   bookstack-app sh
-/ # 
+/ #
 ```
+
 ## Testing
 
 Test the module using the `test-module.sh` script:
 
-
-    ./test-module.sh <NODE_ADDR> ghcr.io/compgeniuses/bookstack:latest
+    ./test-module.sh <NODE_ADDR> ghcr.io/geniusdynamics/bookstack:latest
 
 The tests are made using [Robot Framework](https://robotframework.org/)
 
@@ -146,4 +153,4 @@ Translated with [Weblate](https://hosted.weblate.org/projects/ns8/).
 To setup the translation process:
 
 - add [GitHub Weblate app](https://docs.weblate.org/en/latest/admin/continuous.html#github-setup) to your repository
-- add your repository to [hosted.weblate.org]((https://hosted.weblate.org) or ask a compgeniuses developer to add it to ns8 Weblate project
+- add your repository to [hosted.weblate.org]((https://hosted.weblate.org) or ask a geniusdynamics developer to add it to ns8 Weblate project
