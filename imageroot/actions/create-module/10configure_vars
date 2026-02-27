@@ -39,8 +39,8 @@ maria_db = {
 app = {
     "DB_HOST": "mariadb-app",
     "DB_PORT": "3306",
-    "DB_USER": MARIADB_USER,
-    "DB_PASS": MARIADB_PASSWORD,
+    "DB_USERNAME": MARIADB_USER,
+    "DB_PASSWORD": MARIADB_PASSWORD,
     "DB_DATABASE": MARIADB_DATABASE,
     "APP_KEY": generate_random_password(64),
 }

@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+import os
+import agent
+
+if os.path.exists("app-db.env"):
+    dt = agent.read_envfile("app-db.env")
+    if "DB_USERNAME" not in dt and "DB_USER" in dt:
+        dt["DB_USERNAME"] = dt.pop("DB_USER")
+    if "DB_PASSWORD" not in dt and "DB_PASS" in dt:
+        dt["DB_PASSWORD"] = dt.pop("DB_PASS")
+    agent.write_envfile("app-db.env", dt)
