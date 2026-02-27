@@ -27,7 +27,7 @@ def generate_random_password(length):
 
 if os.path.exists("app-db.env"):
     dt = agent.read_envfile("app-db.env")
-    APP_KEY = dt["APP_KEY"]
+    APP_KEY = dt.get("APP_KEY", generate_random_password(64))
 else:
     APP_KEY = generate_random_password(64)
 
