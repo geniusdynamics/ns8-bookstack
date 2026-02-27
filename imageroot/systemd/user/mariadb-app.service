@@ -21,7 +21,6 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/mariadb-app.pid \
     --pod-id-file %t/bookstack.pod-id --replace -d --name mariadb-app \
     --env-file=%S/state/database.env \
     --volume mysql-data:/var/lib/mysql/:Z \
-    --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci \
     {{ MARIADB_IMAGE }}
 ExecStartPost=/usr/bin/podman exec  mariadb-app /bin/bash -c 'printf "[client] \npassword=${MARIADB_ROOT_PASSWORD}" > /root/.my.cnf'
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/mariadb-app.ctr-id -t 10

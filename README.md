@@ -1,6 +1,6 @@
-# ns8-bookstack
+# NS8 Bookstack
 
-This is a NS8 App for [Bookstack](https://www.bookstackapp.com/).
+This is an NS8 application for [Bookstack](https://www.bookstackapp.com/), a free and open source Wiki designed for teams.
 
 ## Install
 
@@ -15,14 +15,14 @@ Output example:
 
 ## Default Credentials
 
-Initial Login Credetials for boockstack
+Initial Login Credentials for Bookstack
 
-- `USername`: admin@admin.com
+- `Username`: admin@admin.com
 - `Password`: password
 
 ## Configure
 
-Let's assume that the mattermost instance is named `bookstack1`.
+Let's assume that the bookstack instance is named `bookstack1`.
 
 Launch `configure-module`, by setting the following parameters:
 
@@ -45,7 +45,7 @@ EOF
 The above command will:
 
 - start and configure the bookstack instance
-- configure a virtual host for trafik to access the instance
+- configure a virtual host for Traefik to access the instance
 
 ## Get the configuration
 
@@ -61,7 +61,7 @@ To uninstall the instance:
 
     remove-module --no-preserve bookstack1
 
-## Smarthost setting discovery
+## Smarthost Setting Discovery
 
 Some configuration settings, like the smarthost setup, are not part of the
 `configure-module` action input: they are discovered by looking at some
@@ -82,26 +82,28 @@ expected to work: it can be rewritten or discarded completely.
 
 ## Debug
 
-some CLI are needed to debug
+Some CLI commands are needed to debug the module:
 
-- The module runs under an agent that initiate a lot of environment variables (in /home/bookstack1/.config/state), it could be nice to verify them
-  on the root terminal
+- The module runs under an agent that initiates a lot of environment variables (in `/home/bookstack1/.config/state`), it could be useful to verify them on the root terminal:
 
       `runagent -m bookstack1 env`
 
-- you can become runagent for testing scripts and initiate all environment variables
+- You can become runagent for testing scripts and initiate all environment variables:
 
   `runagent -m bookstack1`
 
-the path become :
+The path becomes:
 
 ```
     echo $PATH
     /home/bookstack1/.config/bin:/usr/local/agent/pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/usr/
 ```
 
-- if you want to debug a container or see environment inside
+- If you want to debug a container or see environment inside:
+
   `runagent -m bookstack1`
+
+Then you can run:
 
 ```
 podman ps
@@ -111,10 +113,10 @@ d8df02bf6f4a  docker.io/library/mariadb:10.11.5          --character-set-s...  9
 9e58e5bd676f  docker.io/library/nginx:stable-alpine3.17  nginx -g daemon o...  9 minutes ago  Up 9 minutes  127.0.0.1:20015->80/tcp  bookstack-app
 ```
 
-you can see what environment variable is inside the container
+You can see what environment variables are inside the container:
 
 ```
-podman exec  bookstack-app env
+podman exec bookstack-app env
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 TERM=xterm
 PKG_RELEASE=1
@@ -131,10 +133,10 @@ MARIADB_DB_PORT=3306
 HOME=/root
 ```
 
-you can run a shell inside the container
+You can run a shell inside the container:
 
 ```
-podman exec -ti   bookstack-app sh
+podman exec -ti bookstack-app sh
 / #
 ```
 
@@ -153,4 +155,4 @@ Translated with [Weblate](https://hosted.weblate.org/projects/ns8/).
 To setup the translation process:
 
 - add [GitHub Weblate app](https://docs.weblate.org/en/latest/admin/continuous.html#github-setup) to your repository
-- add your repository to [hosted.weblate.org]((https://hosted.weblate.org) or ask a geniusdynamics developer to add it to ns8 Weblate project
+- add your repository to [hosted.weblate.org](https://hosted.weblate.org) or ask a NethServer developer to add it to the ns8 Weblate project
