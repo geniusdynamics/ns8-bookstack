@@ -55,6 +55,17 @@ You can retrieve the configuration with
 api-cli run get-configuration --agent module/bookstack1
 ```
 
+## Update Module
+
+```bash
+api-cli run update-module --data '{
+  "module_url": "ghcr.io/geniusdynamics/bookstack:latest",
+  "instances": ["bookstack1"],
+  "force": true
+}'
+
+```
+
 ## Uninstall
 
 To uninstall the instance:
