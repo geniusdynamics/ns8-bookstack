@@ -9,6 +9,7 @@ import json
 import sys
 import agent
 import os
+import base64
 
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
@@ -22,6 +23,13 @@ def generate_random_password(length):
     password = random_bytes.hex()
     return password[:length]
 
+
+def generate_laravel_app_key():
+    key = os.urandom(32)  # 32 bytes for AES-256
+    return "base64:" + base64.b64encode(key).decode("utf-8")
+
+
+APP_KEY = generate_laravel_app_key()
 
 MARIADB_ROOT_PASSWORD = generate_random_password(16)
 MARIADB_DATABASE = data.get("MARIADB_DATABASE", "bookstack")
@@ -39,9 +47,10 @@ maria_db = {
 app = {
     "DB_HOST": "mariadb-app",
     "DB_PORT": "3306",
-    "DB_USER": MARIADB_USER,
-    "DB_PASS": MARIADB_PASSWORD,
+    "DB_USERNAME": MARIADB_USER,
+    "DB_PASSWORD": MARIADB_PASSWORD,
     "DB_DATABASE": MARIADB_DATABASE,
+    "APP_KEY": generate_random_password(64),
 }
 
 agent.write_envfile("database.env", maria_db)
