@@ -7,40 +7,9 @@
 
 # Runs before 20restart, so the restarted containers get the migrated values.
 
-import base64
 import os
-import subprocess
 import agent
-
-
-def generate_laravel_app_key():
-    return "base64:" + base64.b64encode(os.urandom(32)).decode("utf-8")
-
-
-def is_valid_laravel_app_key(value):
-    """AES-256-CBC needs exactly 32 bytes: "base64:<32 bytes>" or a 32-character string."""
-    if value.startswith("base64:"):
-        try:
-            return len(base64.b64decode(value[7:], validate=True)) == 32
-        except ValueError:
-            return False
-    return len(value) == 32
-
-
-def app_key_from_volume():
-    """A valid key an administrator put into /config/www/.env by hand, if any."""
-    try:
-        mountpoint = subprocess.run(
-            ["podman", "volume", "inspect", "bookstack-app", "--format", "{{.Mountpoint}}"],
-            capture_output=True, text=True, check=True).stdout.strip()
-        with open(os.path.join(mountpoint, "www", ".env")) as envfile:
-            for line in envfile:
-                if line.startswith("APP_KEY="):
-                    value = line.split("=", 1)[1].strip().strip('"')
-                    return value if is_valid_laravel_app_key(value) else ""
-    except (OSError, subprocess.CalledProcessError):
-        pass
-    return ""
+from bookstack_app_key import find_app_key, store_app_key
 
 
 if os.path.exists("app-db.env"):
@@ -49,15 +18,8 @@ if os.path.exists("app-db.env"):
         dt["DB_USERNAME"] = dt.pop("DB_USER")
     if "DB_PASSWORD" not in dt and "DB_PASS" in dt:
         dt["DB_PASSWORD"] = dt.pop("DB_PASS")
-    # Release 1.2.0 stored a 64-character random string as APP_KEY, which Laravel
-    # refuses, so BookStack never started with it; BookStack 26.09 and later no
-    # longer fall back to a default key either. Replace an invalid key with a
-    # valid one (keep a valid key: it protects encrypted data such as MFA secrets).
-    if not is_valid_laravel_app_key(dt.get("APP_KEY", "")):
-        dt["APP_KEY"] = app_key_from_volume() or generate_laravel_app_key()
     agent.write_envfile("app-db.env", dt)
-    if os.path.exists("app.env"):
-        app = agent.read_envfile("app.env")
-        if app.get("APP_KEY") != dt["APP_KEY"]:
-            app["APP_KEY"] = dt["APP_KEY"]
-            agent.write_envfile("app.env", app)
+    # Release 1.2.0 stored an invalid APP_KEY, which Laravel refuses, and
+    # BookStack 26.09 and later no longer fall back to a default key. Keep a
+    # valid key from app-db.env, app.env or the volume, else generate one.
+    store_app_key(find_app_key())

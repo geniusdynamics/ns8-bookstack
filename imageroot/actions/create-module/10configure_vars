@@ -9,7 +9,7 @@ import json
 import sys
 import agent
 import os
-import base64
+from bookstack_app_key import generate_laravel_app_key
 
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
@@ -22,11 +22,6 @@ def generate_random_password(length):
     random_bytes = os.urandom(length)
     password = random_bytes.hex()
     return password[:length]
-
-
-def generate_laravel_app_key():
-    key = os.urandom(32)  # 32 bytes for AES-256
-    return "base64:" + base64.b64encode(key).decode("utf-8")
 
 
 APP_KEY = generate_laravel_app_key()
