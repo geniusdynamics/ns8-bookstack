@@ -50,7 +50,7 @@ app = {
     "DB_USERNAME": MARIADB_USER,
     "DB_PASSWORD": MARIADB_PASSWORD,
     "DB_DATABASE": MARIADB_DATABASE,
-    "APP_KEY": generate_random_password(64),
+    "APP_KEY": APP_KEY,
 }
 
 agent.write_envfile("database.env", maria_db)
