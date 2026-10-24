@@ -6,10 +6,9 @@
 #
 
 import json
-import os
 import sys
 import agent
-import base64
+from bookstack_app_key import find_app_key, store_app_key
 
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
@@ -17,17 +16,9 @@ data = json.load(sys.stdin)
 
 host = data.get("host", "")
 
-
-def generate_laravel_app_key():
-    key = os.urandom(32)  # 32 bytes for AES-256
-    return "base64:" + base64.b64encode(key).decode("utf-8")
-
-
-if os.path.exists("app-db.env"):
-    dt = agent.read_envfile("app-db.env")
-    APP_KEY = dt.get("APP_KEY", generate_laravel_app_key())
-else:
-    APP_KEY = generate_laravel_app_key()
+# Keep the key the instance runs with; see pypkg/bookstack_app_key.py
+APP_KEY = find_app_key()
+store_app_key(APP_KEY)
 
 APP_URL = "https://" + host
 agent.write_envfile("app.env", {"APP_URL": APP_URL, "APP_KEY": APP_KEY})

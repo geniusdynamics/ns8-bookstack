@@ -5,8 +5,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
+# Runs before 20restart, so the restarted containers get the migrated values.
+
 import os
 import agent
+from bookstack_app_key import find_app_key, store_app_key
+
 
 if os.path.exists("app-db.env"):
     dt = agent.read_envfile("app-db.env")
@@ -15,3 +19,7 @@ if os.path.exists("app-db.env"):
     if "DB_PASSWORD" not in dt and "DB_PASS" in dt:
         dt["DB_PASSWORD"] = dt.pop("DB_PASS")
     agent.write_envfile("app-db.env", dt)
+    # Release 1.2.0 stored an invalid APP_KEY, which Laravel refuses, and
+    # BookStack 26.09 and later no longer fall back to a default key. Keep a
+    # valid key from app-db.env, app.env or the volume, else generate one.
+    store_app_key(find_app_key())
