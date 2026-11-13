@@ -12,4 +12,11 @@ set -e
 # Redirect any output to the journal (stderr)
 exec 1>&2
 
-systemctl --user try-restart bookstack.service
+# try-restart ignores a failed unit: start it again, so an instance that
+# crash-looped with the previous release comes back with the fixed one
+if systemctl --user is-failed --quiet bookstack.service; then
+    systemctl --user reset-failed bookstack.service mariadb-app.service bookstack-app.service
+    systemctl --user restart bookstack.service
+else
+    systemctl --user try-restart bookstack.service
+fi
