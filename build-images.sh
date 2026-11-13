@@ -18,7 +18,7 @@ reponame="bookstack"
 # renovate: datasource=npm packageName=corepack
 corepack_version=0.36.0
 # renovate: datasource=docker packageName=docker.io/linuxserver/bookstack
-BOOKSTACK_VERSION=25.12.8
+BOOKSTACK_VERSION=v26.09.2-ls292
 # Create a new empty container image
 container=$(buildah from scratch)
 
